@@ -1,0 +1,30 @@
+[package]
+name = "phosphor-render"
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+keywords.workspace = true
+license.workspace = true
+publish.workspace = true
+version.workspace = true
+
+[dependencies]
+phosphor-core.workspace = true
+parking_lot.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+skia-safe = { version = "0.97.0", features = ["all-linux", "svg", "textlayout", "webp"], optional = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+skia-safe = { version = "0.97.0", features = ["all-macos", "svg", "textlayout", "webp"], optional = true }
+
+[target.'cfg(target_os = "window")'.dependencies]
+skia-safe = { version = "0.97.0", features = ["all-windows", "svg", "textlayout", "webp"], optional = true }
+
+[features]
+default = ["skia"]
+skia = ["dep:skia-safe"]
+headless = []
+
+[lints]
+workspace = true

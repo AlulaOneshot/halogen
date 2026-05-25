@@ -1,0 +1,22 @@
+[package]
+name = "phosphor-platform"
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+keywords.workspace = true
+license.workspace = true
+publish.workspace = true
+version.workspace = true
+
+[dependencies]
+phosphor-core.workspace = true
+phosphor-render.workspace = true
+tokio.workspace = true
+winit.workspace = true
+
+[features]
+default      = ["skia"]
+skia        = ["phosphor-render/skia"]
+
+[lints]
+workspace = true

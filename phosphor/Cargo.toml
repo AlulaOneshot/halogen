@@ -1,0 +1,21 @@
+[package]
+name = "phosphor"
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+keywords.workspace = true
+license.workspace = true
+publish.workspace = true
+version.workspace = true
+
+[dependencies]
+phosphor-core.workspace = true
+phosphor-widgets.workspace = true
+phosphor-platform.workspace = true
+
+[features]
+default      = ["vello"]
+vello        = ["phosphor-platform/skia"]
+
+[lints]
+workspace = true
