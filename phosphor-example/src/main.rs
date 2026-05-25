@@ -4,7 +4,7 @@
 //! Output: `row_of_boxes.png` in the crate root.
 
 use phosphor_core::color::Color;
-use phosphor_core::style::{ColorStop, GradientStops, SizingAxes, Texture};
+use phosphor_core::style::{BorderEdge, BorderStyle, ColorStop, Corners, Edges, GapStyles, GradientStops, SizingAxes, Texture};
 use phosphor_core::{
     style::{Background, Dimension, Display, FlexDirection, Sizing, ViewportSize, WidgetStyle},
     theme::Theme,
@@ -46,6 +46,10 @@ impl Widget for ColorBox {
                     Sizing::Exact(Dimension::Px(self.size)),
                     Sizing::Exact(Dimension::Px(self.size)),
                 ))
+                .with_border(BorderStyle::new(Edges::all(BorderEdge {
+                    width: 0.0,
+                    texture: self.texture.clone(),
+                })).radius(Corners::all(90.0)))
                 .with_background(Background::from(self.texture.clone())),
         );
         Box::leak(style)
@@ -91,7 +95,10 @@ impl Widget for Row {
                     align_items: phosphor_core::style::Align::Center,
                     justify_content: phosphor_core::style::Justify::Center,
                 })
-                .with_row_gap(Dimension::Px(self.gap))
+                .with_gap(GapStyles {
+                    row_gap: Dimension::Px(self.gap),
+                    column_gap: Dimension::Px(self.gap)
+                })
                 .with_background(Background::color(Color::hex("#1a1a2e"))),
         );
         Box::leak(style)
@@ -145,7 +152,7 @@ fn main() {
             (
                 Texture::conic(
                     (0.5, 0.5),
-                    45.0,
+                    90.0,
                     GradientStops::new(
                         ColorStop {
                             position: 0.0,
@@ -183,7 +190,7 @@ fn main() {
     let data = image
         .encode(None, skia::EncodedImageFormat::WEBP, None)
         .expect("failed to encode WEBP");
-    std::fs::write("row_of_boxes.webp", data.as_bytes()).expect("failed to write WEBP");
+    std::fs::write("circles.webp", data.as_bytes()).expect("failed to write WEBP");
 
     println!("wrote row_of_boxes.webp");
 }
