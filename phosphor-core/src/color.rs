@@ -53,7 +53,8 @@ impl Color {
     /// The leading hash is optional, input is treated as sRGB and decoded to linear.
     ///
     /// On malformed input, a panic occurs.
-    pub fn hex(s: &str) -> Self {
+    pub fn hex(s: impl Into<String>) -> Self {
+        let s = s.into();
         let s = s.trim_start_matches('#');
         let p = |i: usize| u8::from_str_radix(&s[i..i + 2], 16).expect("Malformed input for hex color.") as f32 / 255.0;
         match s.len() {
@@ -112,6 +113,42 @@ impl Color {
     //TODO: Darken and lighten VIA OKLab Space
 
     //TODO: Mix Colors VIA OKLab Space
+}
+
+impl From<&str> for Color {
+    fn from(s: &str) -> Self {
+        Color::hex(s)
+    }
+}
+
+impl From<String> for Color {
+    fn from(s: String) -> Self {
+        Color::hex(&s)
+    }
+}
+
+impl From<(f32, f32, f32, f32)> for Color {
+    fn from((r, g, b, a): (f32, f32, f32, f32)) -> Self {
+        Self::linear_rgba(r, g, b, a)
+    }
+}
+
+impl From<(f32, f32, f32)> for Color {
+    fn from((r, g, b): (f32, f32, f32)) -> Self {
+        Self::linear_rgba(r, g, b, 1.0)
+    }
+}
+
+impl From<(u8, u8, u8, u8)> for Color {
+    fn from((r, g, b, a): (u8, u8, u8, u8)) -> Self {
+        Self::rgba8(r, g, b, a)
+    }
+}
+
+impl From<(u8, u8, u8)> for Color {
+    fn from((r, g, b): (u8, u8, u8)) -> Self {
+        Self::rgb8(r, g, b)
+    }
 }
 
 /// Common color constants in linear-light RGBA.

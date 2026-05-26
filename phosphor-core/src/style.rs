@@ -41,11 +41,16 @@ pub struct ViewportSize {
     pub height: f32,
 }
 
+impl ViewportSize {
+    pub fn new(width: f32, height: f32) -> Self {
+        Self { width, height }
+    }
+}
+
 /// A single dimension value used for width, height, padding, margin, gaps, and insets.
-#[derive(Debug, Clone, Copy, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Dimension {
     /// Taffy determines the value. Meaning depends on context (shrink-to-fit, fill parent, etc.). Default.
-    #[default]
     Auto,
     /// Logical pixels.
     Px(f32),
@@ -154,6 +159,12 @@ impl From<f32> for Dimension {
     }
 }
 
+impl Default for Dimension {
+    fn default() -> Self {
+        Self::Auto
+    }
+}
+
 /// Per-edge values for padding, margin, border, and insets.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Edges<T: Clone> {
@@ -161,34 +172,6 @@ pub struct Edges<T: Clone> {
     pub right: T,
     pub bottom: T,
     pub left: T,
-}
-
-impl Edges<Dimension> {
-    pub fn to_taffy_margin(
-        &self,
-        scale_x: f32,
-        scale_y: f32,
-    ) -> taffy::Rect<taffy::LengthPercentageAuto> {
-        taffy::Rect {
-            top: self.top.to_lpa_y(scale_y),
-            bottom: self.bottom.to_lpa_y(scale_y),
-            left: self.left.to_lpa_x(scale_x),
-            right: self.right.to_lpa_x(scale_x),
-        }
-    }
-
-    pub fn to_taffy_padding(
-        &self,
-        scale_x: f32,
-        scale_y: f32,
-    ) -> taffy::Rect<taffy::LengthPercentage> {
-        taffy::Rect {
-            top: self.top.to_lp_y(scale_y),
-            bottom: self.bottom.to_lp_y(scale_y),
-            left: self.left.to_lp_x(scale_x),
-            right: self.right.to_lp_x(scale_x),
-        }
-    }
 }
 
 impl<T: Clone> Edges<T> {
@@ -221,24 +204,78 @@ impl<T: Clone> Edges<T> {
             left,
         }
     }
+
+    pub fn with_top(mut self, v: T) -> Self {
+        self.top = v;
+        self
+    }
+
+    pub fn with_bottom(mut self, v: T) -> Self {
+        self.bottom = v;
+        self
+    }
+
+    pub fn with_left(mut self, v: T) -> Self {
+        self.left = v;
+        self
+    }
+
+    pub fn with_right(mut self, v: T) -> Self {
+        self.right = v;
+        self
+    }
+}
+
+impl Edges<Dimension> {
+    fn to_taffy_margin(
+        &self,
+        scale_x: f32,
+        scale_y: f32,
+    ) -> taffy::Rect<taffy::LengthPercentageAuto> {
+        taffy::Rect {
+            top: self.top.to_lpa_y(scale_y),
+            bottom: self.bottom.to_lpa_y(scale_y),
+            left: self.left.to_lpa_x(scale_x),
+            right: self.right.to_lpa_x(scale_x),
+        }
+    }
+
+    fn to_taffy_padding(
+        &self,
+        scale_x: f32,
+        scale_y: f32,
+    ) -> taffy::Rect<taffy::LengthPercentage> {
+        taffy::Rect {
+            top: self.top.to_lp_y(scale_y),
+            bottom: self.bottom.to_lp_y(scale_y),
+            left: self.left.to_lp_x(scale_x),
+            right: self.right.to_lp_x(scale_x),
+        }
+    }
+}
+
+impl<T: Clone> From<T> for Edges<T> {
+    fn from(value: T) -> Self {
+        Self::all(value)
+    }
 }
 
 /// Per-corner values for border radii.
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
-pub struct Corners<T: Copy> {
+pub struct Corners<T: Clone> {
     pub top_left: T,
     pub top_right: T,
     pub bottom_right: T,
     pub bottom_left: T,
 }
 
-impl<T: Copy> Corners<T> {
+impl<T: Clone> Corners<T> {
     /// Same value on all four corners.
     pub fn all(v: T) -> Self {
         Self {
-            top_left: v,
-            top_right: v,
-            bottom_right: v,
+            top_left: v.clone(),
+            top_right: v.clone(),
+            bottom_right: v.clone(),
             bottom_left: v,
         }
     }
@@ -251,6 +288,70 @@ impl<T: Copy> Corners<T> {
             bottom_left,
             bottom_right,
         }
+    }
+
+    pub fn with_top(mut self, radius: T) -> Self {
+        self.top_left = radius.clone();
+        self.top_right = radius;
+        self
+    }
+
+    pub fn with_bottom(mut self, radius: T) -> Self {
+        self.bottom_left = radius.clone();
+        self.bottom_right = radius;
+        self
+    }
+
+    pub fn with_left(mut self, radius: T) -> Self {
+        self.top_left = radius.clone();
+        self.bottom_left = radius;
+        self
+    }
+
+    pub fn with_right(mut self, radius: T) -> Self {
+        self.top_right = radius.clone();
+        self.bottom_right = radius;
+        self
+    }
+}
+
+impl<T: Clone + Default> Corners<T> {
+    pub fn from_top(v: T) -> Self {
+        Self {
+            top_left: v.clone(),
+            top_right: v,
+            ..Default::default()
+        }
+    }
+
+    pub fn from_bottom(mut self, v: T) -> Self {
+        Self {
+            bottom_left: v.clone(),
+            bottom_right: v,
+            ..Default::default()
+        }
+    }
+
+    pub fn from_left(mut self, v: T) -> Self {
+        Self {
+            top_left: v.clone(),
+            bottom_left: v,
+            ..Default::default()
+        }
+    }
+
+    pub fn from_right(mut self, v: T) -> Self {
+        Self {
+            top_right: v.clone(),
+            bottom_right: v,
+            ..Default::default()
+        }
+    }
+}
+
+impl<T: Clone> From<T> for Corners<T> {
+    fn from(value: T) -> Self {
+        Self::all(value)
     }
 }
 
@@ -266,9 +367,21 @@ pub enum Sizing {
     MinMax(Option<Dimension>, Option<Dimension>),
 }
 
+impl From<Dimension> for Sizing {
+    fn from(value: Dimension) -> Self {
+        Self::Exact(value)
+    }
+}
+
+impl From<(Option<Dimension>, Option<Dimension>)> for Sizing {
+    fn from((min, max): (Option<Dimension>, Option<Dimension>)) -> Self {
+        Self::MinMax(min, max)
+    }
+}
+
 impl Sizing {
     /// Returns `(size, min_size, max_size)` in Taffy's Dimension type for the X axis.
-    pub fn to_taffy_x(self, scale: f32) -> (taffy::Dimension, taffy::Dimension, taffy::Dimension) {
+    fn to_taffy_x(self, scale: f32) -> (taffy::Dimension, taffy::Dimension, taffy::Dimension) {
         match self {
             Sizing::Exact(d) => (
                 d.to_taffy_x(scale),
@@ -286,7 +399,7 @@ impl Sizing {
     }
 
     /// Returns `(size, min_size, max_size)` in Taffy's Dimension type for the Y axis.
-    pub fn to_taffy_y(self, scale: f32) -> (taffy::Dimension, taffy::Dimension, taffy::Dimension) {
+    fn to_taffy_y(self, scale: f32) -> (taffy::Dimension, taffy::Dimension, taffy::Dimension) {
         match self {
             Sizing::Exact(d) => (
                 d.to_taffy_y(scale),
@@ -530,6 +643,12 @@ impl Texture {
     }
 }
 
+impl From<Color> for Texture {
+    fn from(color: Color) -> Self {
+        Self::color(color)
+    }
+}
+
 /// A control point in a mesh gradient.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MeshPoint {
@@ -546,6 +665,30 @@ pub struct ColorStop {
     pub color: Color,
 }
 
+impl ColorStop {
+    pub fn new(position: f32, color: Color) -> Self {
+        Self { position, color }
+    }
+}
+
+impl From<(f32, Color)> for ColorStop {
+    fn from((position, color): (f32, Color)) -> Self {
+        Self { position, color }
+    }
+}
+
+impl From<(f32, String)> for ColorStop {
+    fn from((position, color): (f32, String)) -> Self {
+        Self { position, color: color.into() }
+    }
+}
+
+impl From<(f32, &str)> for ColorStop {
+    fn from((position, color): (f32, &str)) -> Self {
+        Self { position, color: color.into() }
+    }
+}
+
 /// The color stops for a gradient.
 ///
 /// Enforces a minimum of two stops at the type level. A gradient without
@@ -560,10 +703,10 @@ pub struct GradientStops {
 
 impl GradientStops {
     /// Two-stop gradient (start and end only).
-    pub fn new(start: ColorStop, end: ColorStop) -> Self {
+    pub fn new(start: impl Into<ColorStop>, end: impl Into<ColorStop>) -> Self {
         Self {
-            start,
-            end,
+            start: start.into(),
+            end: end.into(),
             mid: vec![],
         }
     }
@@ -571,12 +714,6 @@ impl GradientStops {
     /// Gradient with additional intermediate stops.
     pub fn with_stops(start: ColorStop, end: ColorStop, mid: Vec<ColorStop>) -> Self {
         Self { start, end, mid }
-    }
-}
-
-impl Into<Texture> for Color {
-    fn into(self) -> Texture {
-        Texture::Color(self)
     }
 }
 
@@ -607,9 +744,9 @@ impl Background {
     }
 }
 
-impl Into<Texture> for Background {
-    fn into(self) -> Texture {
-        self.0
+impl From<Background> for Texture {
+    fn from(value: Background) -> Self {
+        value.0
     }
 }
 
@@ -628,6 +765,44 @@ pub struct BorderEdge {
     pub texture: Texture,
 }
 
+impl BorderEdge {
+    pub fn new(width: f32, texture: impl Into<Texture>) -> Self {
+        Self { width, texture: texture.into() }
+    }
+
+    pub fn from_texture(texture: impl Into<Texture>) -> Self {
+        Self::new(1.0, texture)
+    }
+
+    pub fn from_width(width: f32) -> Self {
+        Self::new(width, Colors::BLACK)
+    }
+}
+
+impl From<(f32, Texture)> for BorderEdge {
+    fn from((width, texture): (f32, Texture)) -> Self {
+        Self {
+            width,
+            texture
+        }
+    }
+}
+
+impl From<(f32, Color)> for BorderEdge {
+    fn from((width, color): (f32, Color)) -> Self {
+        Self {
+            width,
+            texture: color.into()
+        }
+    }
+}
+
+impl Default for BorderEdge {
+    fn default() -> Self {
+        Self::new(0.0, Colors::TRANSPARENT)
+    }
+}
+
 /// Border width, paint, and corner radii.
 #[derive(Debug, Clone, PartialEq)]
 pub struct BorderStyle {
@@ -637,14 +812,23 @@ pub struct BorderStyle {
 }
 
 impl BorderStyle {
-    pub fn new(edges: Edges<BorderEdge>) -> Self {
+    pub fn new(edges: impl Into<Edges<BorderEdge>>, radius: impl Into<Corners<f32>>) -> Self {
+        Self { edges: edges.into(), radius: radius.into() }
+    }
+
+    pub fn from_edges(edges: Edges<BorderEdge>, radius: Corners<f32>) -> Self {
+        Self { edges, radius }
+    }
+
+    pub fn from_corners(corners: impl Into<Corners<f32>>) -> Self {
+        let corners = corners.into();
         Self {
-            edges,
-            radius: Corners::all(0.0),
+            edges: Default::default(),
+            radius: Corners::default(),
         }
     }
 
-    pub fn radius(mut self, radius: Corners<f32>) -> Self {
+    pub fn with_radius(mut self, radius: Corners<f32>) -> Self {
         self.radius = radius;
         self
     }
@@ -659,11 +843,17 @@ impl BorderStyle {
     }
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum ShadowSizing {
+    Pixels(f32),
+    ScaleUnits(ScaleUnits)
+}
+
 /// A CSS-style box shadow.
 #[derive(Debug, Clone, PartialEq)]
 pub struct BoxShadow {
     /// (x, y) pixel offset from the widget.
-    pub offset: (f32, f32),
+    pub offset: (ShadowSizing, ShadowSizing),
     /// Gaussian blur radius in pixels.
     pub blur: f32,
     /// Extra expansion of the shadow beyond the widget's bounds.
@@ -675,7 +865,7 @@ pub struct BoxShadow {
 
 impl BoxShadow {
     /// Construct a standard drop shadow (no spread, not inset).
-    pub fn drop(offset: (f32, f32), blur: f32, color: Color) -> Self {
+    pub fn drop(offset: (ShadowSizing, ShadowSizing), blur: f32, color: Color) -> Self {
         Self {
             offset,
             blur,
@@ -786,8 +976,8 @@ pub struct SizingAxes {
 
 impl SizingAxes {
     /// Width and height sizing
-    pub fn new(width: Sizing, height: Sizing) -> Self {
-        Self { width, height }
+    pub fn new(width: impl Into<Sizing>, height: impl Into<Sizing>) -> Self {
+        Self { width: width.into(), height: height.into() }
     }
 
     /// Width and height are the same
@@ -1058,7 +1248,7 @@ impl WidgetStyle {
                 border: BorderStyle::new(Edges::all(BorderEdge {
                     width: 0.0,
                     texture: Texture::Color(Colors::TRANSPARENT),
-                })),
+                }), Corners::all(0.0)),
                 shadows: vec![],
                 opacity: 1.0,
             },

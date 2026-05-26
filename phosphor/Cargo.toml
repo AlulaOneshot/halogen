@@ -14,8 +14,7 @@ phosphor-widgets.workspace = true
 phosphor-platform.workspace = true
 
 [features]
-default      = ["vello"]
-vello        = ["phosphor-platform/skia"]
+default      = []
 
 [lints]
 workspace = true

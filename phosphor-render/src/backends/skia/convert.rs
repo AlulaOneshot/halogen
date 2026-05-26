@@ -146,3 +146,20 @@ pub(crate) fn texture_to_paint(texture: &Texture, rect: Rect, stroke_width: Opti
 
     paint
 }
+
+pub(crate) fn expand_rect(rect: Rect, amount: f32) -> Rect {
+    Rect {
+        x: rect.x - amount,
+        y: rect.y - amount,
+        width: rect.width + amount * 2.0,
+        height: rect.height + amount * 2.0,
+    }
+}
+
+pub(crate) fn offset_rect(rect: Rect, offset: (f32, f32)) -> Rect {
+    Rect {
+        x: rect.x + offset.0,
+        y: rect.y + offset.1,
+        ..rect
+    }
+}

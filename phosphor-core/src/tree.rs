@@ -104,6 +104,13 @@ impl WidgetTree {
         self.root = Some(self.mount(WidgetNode::new(widget), None));
     }
 
+    pub fn set_root_boxed(&mut self, widget: Box<dyn Widget>) {
+        if let Some(old_root) = self.root.take() {
+            self.remove_subtree(old_root);
+        }
+        self.root = Some(self.mount(WidgetNode::new_boxed(widget), None));
+    }
+
     fn mount(&mut self, node: WidgetNode, parent: Option<WidgetId>) -> WidgetId {
         let layout_node = self
             .taffy

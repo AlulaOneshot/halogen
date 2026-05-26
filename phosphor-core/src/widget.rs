@@ -152,6 +152,13 @@ impl WidgetNode {
         }
     }
 
+    pub fn new_boxed(widget: Box<dyn Widget>) -> Self {
+        Self {
+            widget,
+            key: None,
+        }
+    }
+
     /// Assign a key for stable identity across reconciliation.
     ///
     /// Use for items in dynamic lists where order may change.
@@ -244,7 +251,7 @@ impl<'a> PaintContext<'a> {
         self.renderer.fill_rrect(self.bounds, radii, &paint.background.0);
 
         // 3. Border
-        //self.renderer.stroke_rrect(self.bounds, radii, &paint.border);
+        self.renderer.stroke_rrect(self.bounds, radii, &paint.border);
 
         // 4. Inset shadows
         for shadow in paint.shadows.iter().filter(|s| s.inset) {
