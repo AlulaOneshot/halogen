@@ -1,5 +1,5 @@
 [package]
-name = "phosphor-example"
+name = "halogen-core"
 authors.workspace = true
 categories.workspace = true
 edition.workspace = true
@@ -9,9 +9,6 @@ publish.workspace = true
 version.workspace = true
 
 [dependencies]
-phosphor-core.workspace = true
-phosphor-render.workspace = true
-phosphor-platform.workspace = true
 
 [lints]
 workspace = true

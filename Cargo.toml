@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["phosphor-core", "phosphor-ffi", "phosphor", "phosphor-platform", "phosphor-render", "phosphor-widgets", "phosphor-example"]
+members = ["halogen-core"]
 
 [workspace.package]
 authors = ["Liam Greenway <liam.greenway@students.coderva.org>"]
@@ -14,19 +14,7 @@ version = "0.1.0"
 [workspace.lints]
 
 [workspace.dependencies]
-parking_lot = "0.12"
-slotmap = "1"
-downcast-rs = "2"
-taffy = "0.10"
-futures-core = "0.3"
-
-tokio = { version = "1", features = ["full"] }
-winit = "0.30"
-
-phosphor-core = { path = "phosphor-core" }
-phosphor-render = { path = "phosphor-render" }
-phosphor-platform = { path = "phosphor-platform" }
-phosphor-widgets = { path = "phosphor-widgets" }
+phosphor-core = { path = "halogen-core" }
 
 [profile.release]
 opt-level = 3
