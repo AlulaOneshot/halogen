@@ -1,0 +1,22 @@
+[package]
+name = "halogen-render"
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+keywords.workspace = true
+license.workspace = true
+publish.workspace = true
+version.workspace = true
+
+[dependencies]
+halogen-core.workspace = true
+tiny-skia = { version = "0.12", features = ["default", "png-format", "simd"], optional = true}
+softbuffer = { version = "0.4", features = ["bytemuck", "fastrand"]}
+raw-window-handle.workspace = true
+
+[features]
+default = ["skia"]
+skia = ["dep:tiny-skia"]
+
+[lints]
+workspace = true

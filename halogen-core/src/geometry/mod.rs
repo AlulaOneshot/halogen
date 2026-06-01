@@ -8,6 +8,7 @@ mod corners;
 mod axes;
 mod point;
 mod rect;
+mod measure;
 
 pub use pixels::*;
 pub use percentage::*;
@@ -19,3 +20,4 @@ pub use corners::*;
 pub use axes::*;
 pub use point::*;
 pub use rect::*;
+pub use measure::*;

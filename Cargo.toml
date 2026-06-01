@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["halogen-core"]
+members = ["halogen-core", "halogen-example", "halogen-render"]
 
 [workspace.package]
 authors = ["Liam Greenway <liam.greenway@students.coderva.org>"]
@@ -14,7 +14,16 @@ version = "0.1.0"
 [workspace.lints]
 
 [workspace.dependencies]
-phosphor-core = { path = "halogen-core" }
+winit = "0.30"
+slotmap = "1"
+rand = "0.10"
+downcast-rs = "2"
+taffy = "0.10"
+raw-window-handle = "0.6"
+
+halogen-core = { path = "halogen-core" }
+halogen-render = { path = "halogen-render" }
+
 
 [profile.release]
 opt-level = 3

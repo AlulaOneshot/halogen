@@ -1,5 +1,5 @@
 [package]
-name = "halogen-core"
+name = "halogen-example"
 authors.workspace = true
 categories.workspace = true
 edition.workspace = true
@@ -9,10 +9,10 @@ publish.workspace = true
 version.workspace = true
 
 [dependencies]
-slotmap.workspace = true
-rand.workspace = true
-downcast-rs.workspace = true
-taffy.workspace = true
+halogen-core.workspace = true
+halogen-render.workspace = true
+winit.workspace = true
+raw-window-handle.workspace = true
 
 [lints]
 workspace = true

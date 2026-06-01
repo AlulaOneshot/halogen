@@ -1,5 +1,6 @@
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, RemAssign, Sub, SubAssign};
 
+/// Follows the largest axis for scaling. When largest axis is 1280px, 1su is equal to 50px
 #[derive(Copy, Clone, Debug, PartialOrd, PartialEq)]
 pub struct ScaleUnits(pub f32);
 

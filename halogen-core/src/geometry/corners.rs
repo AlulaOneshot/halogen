@@ -1,9 +1,9 @@
 #[derive(Copy, Clone, Debug, PartialOrd, PartialEq)]
 pub struct Corners<T> {
-    top_left: T,
-    top_right: T,
-    bottom_left: T,
-    bottom_right: T,
+    pub top_left: T,
+    pub top_right: T,
+    pub bottom_left: T,
+    pub bottom_right: T,
 }
 
 impl<T: Clone> Corners<T> {

@@ -1,9 +1,9 @@
 #[derive(Copy, Clone, Debug, PartialOrd, PartialEq)]
 pub struct Edges<T> {
-    top: T,
-    bottom: T,
-    left: T,
-    right: T,
+    pub top: T,
+    pub bottom: T,
+    pub left: T,
+    pub right: T,
 }
 
 impl<T: Clone> Edges<T> {
