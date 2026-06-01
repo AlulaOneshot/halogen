@@ -4,7 +4,7 @@ A simple custom GUI framework in rust. It uses taffy for flex layout, and skia-s
 
 | Platform | Arch                             | Tested OS Version | Stability |
 |----------|----------------------------------|-------------------|-----------|
-| macOS    | Apple Silicon (arm64)            | 26.3.1 (a)        | Untested  |
-| macOS    | Apple Silicon (x86_64 emulation) | 26.3.1 (a)        | Untested  |
+| macOS    | Apple Silicon (arm64)            | 26.3.1 (a)        | Stable    |
+| macOS    | Apple Silicon (x86_64 emulation) | 26.3.1 (a)        | Stable    |
 
 More platforms will be released as I can test them (soon).
